@@ -3,16 +3,17 @@ const fetch = require('node-fetch');
 class Pokemon {
 
   /**
-   * @param {String} arg Pokemon Id or Pokemon Name 
+   * @param {String} arg Pokemon Id or Pokemon Name. Must Be English Name
+   * @param {String} lang The Language String used. Default to English
    */
-  async getPokemon(arg) {
+  async get(arg, lang='en') {
     // fetch
     let json = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${arg}`).then(res => res.json()).then(data => data);
 
     // information
     this.information = {
       id:json.id,
-      name:json.names.find((d) => d.language.name === 'en').name
+      name:json.names.find((d) => d.language.name === lang).name
     };
     // capture rate
     this.capture_rate = json.capture_rate;
@@ -23,9 +24,9 @@ class Pokemon {
     // egg groups
     this.eggGroups = json.egg_groups;
     // text in the pokedex?
-    this.text = json.flavor_text_entries.find((d) => d.language.name === 'en').flavor_text;
+    this.text = json.flavor_text_entries.find((d) => d.language.name === lang).flavor_text;
     // genus
-    this.genus = json.genera.find((d) => d.language.name === 'en').genus;
+    this.genus = json.genera.find((d) => d.language.name === lang).genus;
     // name of the generation
     this.generation = json.generation.name;
     // growth rate
@@ -45,8 +46,10 @@ class Pokemon {
 
 async function testPkmn() {
   let pkmn = new Pokemon();
-  await pkmn.getPokemon(1);
+  await pkmn.get(1);
   console.log(pkmn);
 }
 
 testPkmn()
+
+module.exports = Pokemon;

@@ -52,3 +52,5 @@ async function test() {
   console.log(desc, res)
 }
 test()
+
+module.exports = Pokedex;
