@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const Pokemon = require('./pokemon');
 
 class Pokedex {
   /**
@@ -8,21 +9,22 @@ class Pokedex {
   constructor(n) {
     this.id = n;
     this.url = `https://pokeapi.co/api/v2/pokedex/${n}`;
-
   }
   /**
-   * get a pokemon by name
-   * @param {String} name the pokemon name
+   * get a pokemon by id or name
+   * @param {String} arg the pokemon name or id
    */
-  async getPokemonByName(name) {
-    return await fetch(this.url).then(res => res.json()).then(data => data.pokemon_entries.find((arr) => arr.pokemon_species.name === name))
-  }
-  /**
-   * Get Pokemon By Id
-   * @param {Number} id 
-   */
-  async getPokemonById(id) {
-    return await fetch(this.url).then(res => res.json()).then(data => data.pokemon_entries[id])
+  async getPokemon(arg) {
+    let res;
+    if(Number.isInteger(arg)) {
+      res = await fetch(this.url).then(res => res.json()).then(data => data.pokemon_entries[arg]);
+    }
+    else {
+      res = await fetch(this.url).then(res => res.json()).then(data => data.pokemon_entries.find((arr) => arr.pokemon_species.name === arg));
+    }
+    let pkmn = new Pokemon();
+    await pkmn.get(res.pokemon_species.name)
+    return pkmn
   }
   async getRegionName() {
     return await fetch(this.url).then(res => res.json()).then(data => data.name)
@@ -41,16 +43,5 @@ class Pokedex {
     return this.id;
   }
 }
-
-// Tests
-async function test() {
-  const dex = new Pokedex(2);
-  //let res = await dex.getPokemonById(0);
-  let res = await dex.getPokemonByName('bulbasaur');
-
-  let desc = await dex.getDescription();
-  console.log(desc, res)
-}
-test()
 
 module.exports = Pokedex;

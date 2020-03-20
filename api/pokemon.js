@@ -44,12 +44,4 @@ class Pokemon {
   }
 }
 
-async function testPkmn() {
-  let pkmn = new Pokemon();
-  await pkmn.get(1);
-  console.log(pkmn);
-}
-
-testPkmn()
-
 module.exports = Pokemon;
